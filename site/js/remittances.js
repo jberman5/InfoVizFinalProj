@@ -2,6 +2,8 @@ $(function() {
 
 if (!Modernizr.svg) { return; }
 
+barGraph();
+
 var landColor = d3.rgb("#BABECC");  //1e2b32 .brighter(2)
 // var width = height = null;
 
@@ -15,7 +17,7 @@ var background = chart_svg.append("rect")
 
 var migrationsColor =
   d3.scale.log()
-    .range(["#E14B15", "#FF9E5E"])
+    .range(["#C6CCE7", "#959AB2"])
     .interpolate(d3.interpolateHcl);
 
 var projection = d3.geo.robinson()
@@ -141,7 +143,7 @@ var magnitudeAxis = d3.svg.axis()
   .ticks(timelineHeight / 40)
   .tickSize(5, 0, 0)
   .tickPadding(2)
-  .tickFormat(moneyMillionsFormat);
+  .tickFormat(refugeeTotalsByOrigin);
 
 var selectedYear = null;
 var selectedCountry = null, highlightedCountry = null;
@@ -283,7 +285,7 @@ function slideSelected() {
       setPerMigrant(false);
       selectCountry(null);
       selectYear(2012);
-      hideAid();
+      // hideAid();
     break;
 
     case 1: // Viermal mehr als Entwicklungshilfe
@@ -291,48 +293,48 @@ function slideSelected() {
       setPerMigrant(false);
       selectCountry(null);
       selectYear(2011);
-      showAid();
+      // showAid();
     break;
 
     case 2:  // Pro Kopf
-      $("#color-legend").fadeOut();
-      setPerMigrant(true);
-      selectCountry(null);
-      selectYear(2012);
-      hideAid();
+      $("#color-legend").fadeIn();
+      setPerMigrant(false);
+      selectCountry("SYR", true);
+      selectYear(2015);
+      // showAid();
     break;
 
     case 3: //  Indien und China weit vorneweg
       $("#color-legend").fadeIn();
-      setPerMigrant(false);
-      selectCountry("IND", true);
-      selectYear(2012);
-      showAid();
-    break;
-
-    case 4: // Weniger Geld für Griechenland und die Türkei
-      $("#color-legend").fadeIn();
-      setPerMigrant(false);
-      selectCountry("TUR", true);
-      selectYear(2000);
-      showAid();
-    break;
-
-    case 5: // Krise? Welche Krise?
-      $("#color-legend").fadeOut();
-      setPerMigrant(false);
+      setPerMigrant(true);
       selectCountry(null);
-      selectYear(2008);
-      showAid();
+      selectYear(2017);
+      // showAid();
     break;
-
-    case 6: //  Erkunden Sie die Daten selber!
-      $("#color-legend").fadeIn();
-      setPerMigrant(false);
-      selectCountry(null);
-      selectYear(2010);
-      showAid();
-    break;
+    //
+    // case 4: // Weniger Geld für Griechenland und die Türkei
+    //   $("#color-legend").fadeIn();
+    //   setPerMigrant(false);
+    //   selectCountry("TUR", true);
+    //   selectYear(2000);
+    //   showAid();
+    // break;
+    //
+    // case 5: // Krise? Welche Krise?
+    //   $("#color-legend").fadeOut();
+    //   setPerMigrant(false);
+    //   selectCountry(null);
+    //   selectYear(2008);
+    //   showAid();
+    // break;
+    //
+    // case 6: //  Erkunden Sie die Daten selber!
+    //   $("#color-legend").fadeIn();
+    //   setPerMigrant(false);
+    //   selectCountry(null);
+    //   selectYear(2010);
+    //   showAid();
+    // break;
   }
 
 };
@@ -439,7 +441,107 @@ function calcTotalsByYear(values) {
 }
 
 
+function barGraph() {
+  //////////////
 
+  var data = [{
+                  "name": "Top 1",
+                  "value": 15000,
+          },
+              {
+                  "name": "Top 2",
+                  "value": 10203,
+          },
+              {
+                  "name": "Top 3",
+                  "value": 8038,
+          },
+              {
+                  "name": "Top 4",
+                  "value": 5300,
+          },
+              {
+                  "name": "Top 5",
+                  "value": 1600,
+          }];
+
+          //sort bars based on value
+          data = data.sort(function (a, b) {
+              return d3.ascending(a.value, b.value);
+          })
+
+          //set up svg using margin conventions - we'll need plenty of room on the left for labels
+          var margin = {
+              top: 15,
+              right: 25,
+              bottom: 15,
+              left: 50
+          };
+
+          var width = 250 - margin.left - margin.right,
+              height = 150 - margin.top - margin.bottom;
+
+          var svg = d3.select("#graphic").append("svg")
+              .attr("width", width + margin.left + margin.right)
+              .attr("height", height + margin.top + margin.bottom)
+              .append("g")
+              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+          var x = d3.scale.linear()
+              .range([0, width])
+              .domain([0, d3.max(data, function (d) {
+                  return d.value;
+              })]);
+
+          var y = d3.scale.ordinal()
+              .rangeRoundBands([height, 0], .1)
+              .domain(data.map(function (d) {
+                  return d.name;
+              }));
+
+          //make y axis to show bar names
+          var yAxis = d3.svg.axis()
+              .scale(y)
+              //no tick marks
+              .tickSize(0)
+              .orient("left");
+
+          var gy = svg.append("g")
+              .attr("class", "y axis")
+              .call(yAxis)
+
+          var bars = svg.selectAll(".bar")
+              .data(data)
+              .enter()
+              .append("g")
+
+          //append rects
+          bars.append("rect")
+              .attr("class", "bar")
+              .attr("y", function (d) {
+                  return y(d.name);
+              })
+              .attr("height", y.rangeBand())
+              .attr("x", 0)
+              .attr("width", function (d) {
+                  return x(d.value);
+              });
+
+          //add a value label to the right of each bar
+          bars.append("text")
+              .attr("class", "label")
+              .attr("y", function (d) {
+                  return y(d.name) + y.rangeBand() / 2 + 4;
+              })
+              .attr("x", function (d) {
+                  return x(d.value) + 3;
+              })
+              .text(function (d) {
+                  return d.value;
+              });
+
+  ///////////////
+}
 
 
 
@@ -640,25 +742,26 @@ function updateDetails() {
     var countryAid = aidTotalsByRecipient[iso3];
     totalAid = (countryAid != null ? str2num(countryAid[selectedYear]) : NaN);
 
-    details.select(".aid .title").text(msg("details.aid.title.selected-country"));
+    // details.select(".aid .title").text(msg("details.aid.title.selected-country"));
+    details.select(".migrants .title").text(msg("details.migrants.title.total"));
     details.select(".migrants .title").text(msg("details.migrants.title.selected-country"));
     details.select(".remittances .title").text(msg("details.remittances.title.selected-country"));
   } else {
     countryName = msg("details.remittances.total");
 
     numMigrants = calcTotalMigrants(selectedYear);
-    totalRemittances = remittanceTotals[selectedYear];
-    totalAid = aidTotals[selectedYear];
+    // totalRemittances = remittanceTotals[selectedYear];
+    // totalAid = aidTotals[selectedYear];
 
-    details.select(".aid .title").text(msg("details.aid.title.total"));
-    details.select(".migrants .title").text(msg("details.migrants.title.total"));
-    details.select(".remittances .title").text(msg("details.remittances.title.total"));
+    // details.select(".aid .title").text(msg("details.aid.title.total"));
+    // details.select(".migrants .title").text(msg("details.migrants.title.total"));
+    // details.select(".remittances .title").text(msg("details.remittances.title.total"));
   }
 
   details.select(".migrants .value").text(numberFormat(numMigrants));
-  details.select(".remittances .value").text(moneyMillionsFormat(totalRemittances));
-  details.select(".aid .value").text(moneyMillionsFormat(totalAid));
-  details.select(".remittancesPerCapita .value").text(moneyMillionsFormat(totalRemittances / numMigrants));
+  // details.select(".remittances .value").text(moneyMillionsFormat(totalRemittances));
+  // details.select(".aid .value").text(moneyMillionsFormat(totalAid));
+  // details.select(".remittancesPerCapita .value").text(moneyMillionsFormat(totalRemittances / numMigrants));
   details.select(".country").text(countryName);
 }
 
@@ -672,6 +775,7 @@ function setPerMigrant(val) {
 }
 
 function selectYear(year, duration) {
+
   var r = d3.extent(yearScale.domain());
   if (year < r[0]) year = r[0];
   if (year > r[1]) year = r[1];
@@ -689,6 +793,7 @@ function selectYear(year, duration) {
 //  if (selectedCountry !== null)
   updateChoropleth();
   updateDetails();
+  // barGraph();
 }
 
 function updateBubbleSizes(t) {
@@ -780,33 +885,29 @@ function updateChoropleth() {
 
     var code = ( selectedCountry !== null ? selectedCountry : highlightedCountry);
 
-
     var migrantsFromCountry = migrationsByOriginCode[code];
     if (migrantsFromCountry === undefined) {
-      console.warn("No migrations for " + code);
+      console.warn("No refugees for " + code);
       migrantsFromCountry = [];
     }
 
     var max =
-      // calc max over time for country
       d3.max(migrantsFromCountry, function(d) {
         return d3.max(migrationYears.map(function(y) { return +d[y]; }));
       });
 
     migrationsColor.domain([1, max]);
 
-
     var migrantsByDest = d3.nest()
-      .key(function(d) { return d.Dest; })
+      .key(function(d) { return d.dest; })
       .rollup(function(d) { return d[0]; })
       .map(migrantsFromCountry);
-
 
     chart_svg.selectAll("path.land")
       .classed("highlighted", function(d) { return d.id === highlightedCountry; })
       .classed("selected", function(d) { return d.id === selectedCountry; })
-       .transition()
-        .duration(50)
+      .transition()
+      .duration(50)
       .attr("fill", function(d) {
 
         var m = migrantsByDest[d.id];
@@ -841,6 +942,8 @@ function interpolateNumOfMigrants(values, year) {
   var val = str2num(values[year]);
 
   if (isNaN(val)) {
+    val = str2num(values[2010]);
+
     if (year >= 2011) {
 	    val = str2num(values[2010]);
     }
@@ -860,7 +963,10 @@ function getInterpolatedNumberOfMigrants(from, to, year) {
   var migs, vals;
   migs = migrationsByOriginCode[from];
   if (migs != undefined) {
-    vals = migs.filter(function(d) { return d.Dest === to; })[0];
+
+    vals = migs.filter(function(d) {
+      console.log(d.iso3);
+      return d.iso3 === to; })[0];
     if (vals != undefined) {
       return interpolateNumOfMigrants(vals, year);
     }
@@ -959,11 +1065,12 @@ function hideTooltip() {
 
 
 function updateCircleLegend() {
+
   var container = d3.select("#circle-legend");
   var margin = {left:20, top:20, right:20, bottom:20};
   var maxr = rscale.range()[1];
   var w = 150 - margin.left - margin.right,
-      h = maxr * 2;
+      h = 300; // maxr * 2;
 
   var svg, defs, g = container.select("g.circle-legend"), itemEnter;
 
@@ -1018,8 +1125,6 @@ function updateCircleLegend() {
   items.select("text");  // propagate data update from parent
   items.selectAll("text")
     .text(function(d) { return moneyMillionsFormat(d)});
-
-
 }
 
 function updateColorLegend() {
@@ -1056,7 +1161,6 @@ function updateColorLegend() {
         fill: "url(#migrants-scale-gradient)"
       })
 
-
     g.append("text")
       .attr({ "class":"title", x : w/2, y : -7, "text-anchor":"middle" })
       .text(msg("legend.migrants.number"));
@@ -1077,9 +1181,9 @@ function updateColorLegend() {
 
 queue()
   .defer(d3.json, "data/world-countries.json")
-  .defer(d3.csv, "data/refugee-fair.csv")
-  .defer(d3.json, "data/oecd-aid.json")
   .defer(d3.csv, "data/refugee-year.csv")
+  .defer(d3.json, "data/oecd-aid.json")
+  .defer(d3.csv, "data/refugee-pair.csv")
   .defer(d3.csv, "data/refugee-totals.csv")
   .await(function(err, world, remittances, aid, migrations, refugeeTotals) {
     refugeeTotals = refugeeTotals.filter(function(m) {
@@ -1112,7 +1216,7 @@ queue()
 //      d3.keys(aid).filter(function(d) { return  d!== "TOTAL"}).map(function(d) { return aid[d]; })
 //    );
 
-    refugeeTotalsByOrigin = nestBy("origin", refugeeTotals);
+    refugeeTotalsByOrigin = nestBy("origin", remittances);
 
     remittanceTotalsPerMigrant = calcPerMigrantValues(remittanceTotals);
     remittanceTotalsPerMigrantByMigrantsOrigin = calcRemittanceTotalsPerMigrantByMigrantsOrigin();
@@ -1129,20 +1233,11 @@ queue()
     fitMapProjection();
 
 
-
-
-
-
-
     initCountryNames(remittances);
     world.features.forEach(function(f) {
       countryFeaturesByCode[f.id] = f;
     });
     initCountriesTypeahead(remittances);
-
-
-
-
 
     chart_svg.append("g")
        .attr("class", "map")
@@ -1183,11 +1278,10 @@ queue()
 
 
     var flows = migrations.forEach(function(flow) {
-      if (migrationsByOriginCode[flow.Origin] === undefined) {
-        migrationsByOriginCode[flow.Origin] = [];
+      if (migrationsByOriginCode[flow.origin] === undefined) {
+        migrationsByOriginCode[flow.origin] = [];
       }
-      migrationsByOriginCode[flow.Origin].push(flow);
-
+      migrationsByOriginCode[flow.origin].push(flow);
     });
 
     var gcountries = chart_svg.append("g")
@@ -1346,9 +1440,6 @@ queue()
     $("#per-capita-chk").click(function(d) {
       setPerMigrant($(this).is(":checked"));
     })
-
-
-
 
     $("#chart g.map path.land")
            .add("#chart g.countries circle")
