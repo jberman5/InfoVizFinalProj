@@ -1,9 +1,9 @@
 body {
-     font-family: 'Lato', Helvetica, sans-serif; text-shadow: 1px 1px 1px #111;
+     font-family: 'Lato', Helvetica, sans-serif; /* text-shadow: 1px 1px 1px #BABECB */;
      font-weight: 300;
      padding:0;
      margin:0;
-     background-color: #111;
+     /* background-color: #BABECB; */
  }
 
  #loading {
@@ -19,9 +19,9 @@ body {
  }
 
  h1 {
-     background-color: #111;
+     /* background-color: #BABECB; */
      color: white;
-     font-size: 19pt;
+     font-size: 40pt;
      font-weight: bold;
      top: 0px;
      margin-top:0;
@@ -61,9 +61,9 @@ body {
      position: absolute;
      left:30px; bottom:20px;
      color:white;
-     font-size: 14px;
+     font-size: 20px;
      border:2px solid #999;
-     background-color: #E0E5EE;
+     /* background-color: #E0E5EE; */
      padding:6px 7px 7px 7px;
      border-radius: 10px;
  }
@@ -140,7 +140,7 @@ body {
      margin-left:200px;
  }
 
- /* #guide .anim.playing {
+ #guide .anim.playing {
      background: url('../images/pause.svg') no-repeat;
  }
 
@@ -150,7 +150,7 @@ body {
 
  #guide .prev {
      background: url('../images/prev.png') no-repeat;
- } */
+ }
 
 
  /* MAP STUFF */
@@ -171,31 +171,33 @@ body {
   }
  #details .grp { margin-top:20px; }
  #details .country {
-     color:#74777F; font-size:25pt;
+     color:#74777F;
+     font-size:25pt;
      text-rendering: optimizeLegibility; /* proper kerning for the word Total */
      margin-bottom:5px;
+     margin-top: 20px;
  }
- #details .country { z-index:11 !important; background-color: #E0E5EE; height: 1em; }
+ #details .country { z-index:11 !important; height: 1em; }
  #details .year { color:#999; font-size:25pt; margin-bottom:10px; }
- #details .value {   font-size:14pt; color:white;}
- #details .migrants .value {   font-size:12pt; }
+ #details .value {   font-size:20pt; color:#111;}
+ #details .migrants .value { font-size:20pt; }
  #details .migrants {
-     background-image: url(../images/migrants.png);
+     /* background-image: url(../images/migrants.png);
      background-repeat: no-repeat;
      background-size: 32px 30px;
      background-position: 3px 5px;
-     padding-left:50px;
+     padding-left:50px; */
  }
  #details .remittances .value {   font-size:20pt; }
  #details .remittances .title {   font-size:14pt; }
  #details .remittancesPerCapita {
-     background-image: url(../images/per-migrant.png);
+     /* background-image: url(../images/per-migrant.png);
      background-repeat: no-repeat;
      background-size: 40px;
-     padding-left:50px;
+     padding-left:50px; */
  }
- #details .remittancesPerCapita .value {   font-size:20pt; }
- #details .remittancesPerCapita .title {   font-size:14pt; }
+ #details .remittancesPerCapita .value { font-size:20pt; }
+ #details .remittancesPerCapita .title { font-size:14pt; }
  #details .title {  font-size:10pt; color:white; margin-top:0px; margin-bottom:5px; }
  #details .comment { margin-top:3px; display:block; font-size:8pt; color:#999;}
 
@@ -212,11 +214,7 @@ body {
 
  #chart .map g.arcs path:hover { fill:white; }
 
-
-
  #chart .map .land { stroke-width:1.0; }
-
-
 
  #chart .map .land.highlighted {
      /* fill: #67F7C1; */
@@ -228,14 +226,14 @@ body {
      /*fill: #9D7C37;*/
      /*fill: #276cab;*/
      stroke: #F2D59A;
-     fill:#555;
+     fill:#158ED2;
      stroke-width:1.3;
  }
 
  #timeline {
      position:fixed;
      bottom:10px;
-     width:100%;
+     width:80%;
      /*height:120px;*/
      text-align: right;
      /*background-color: rgba(0,0,0,0.1);*/
@@ -282,8 +280,8 @@ body {
      background-image: url('../images/play.svg');
      background-repeat:no-repeat;
      background-position:center top;
-     background-size:50px 50px;
-     height:80px; width:80px;
+     background-size:20px 20px;
+     height:20px; width:20px;
      cursor:pointer;
      opacity:0.6;
      pointer-events: visiblePainted;
@@ -298,18 +296,18 @@ body {
  #timeline g.selectorHand, #timeline g.tseries  { pointer-events: visiblePainted;  }
  #timeline path.domain { fill:#111; fill-opacity:0.1; stroke:#555; stroke-width:0.3; }
  #timeline g.selectorHand { cursor:ew-resize; }
- #timeline g.selectorHand line { stroke:#999; stroke-width:2;   }
- #timeline g.selectorHand circle.center {  fill:#fff; stroke:#666; stroke-width:2; }
+ #timeline g.selectorHand line { stroke:#DD4922; stroke-width:2;   }
+ #timeline g.selectorHand circle.center {  fill:#DD4922; stroke:#DD4922; stroke-width:2; }
 
  #timeline g.tseries path { stroke-width:2.5; }
- #timeline g.tseries path.remittances { stroke:/*#00b48f*/white; }
+ #timeline g.tseries path.remittances { stroke: #DD4922; }
  #timeline g.tseries path.aid { stroke:#2c97df; }
 
  #timeline g.tseries .legend { opacity: 0.9; }
  #timeline g.tseries .legend circle { stroke:#111; stroke-width:1; }
- #timeline g.tseries .legend .remittances  { /*fill:#00b48f;*/ fill:white; }
+ #timeline g.tseries .legend .remittances  { fill:#DD4922; }
  #timeline g.tseries .legend .aid  { fill:#2c97df; }
- #timeline g.tseries .legend text { font-size: 10pt; alignment-baseline:central; text-shadow: 1px 1px 1px #111; }
+ #timeline g.tseries .legend text { font-size: 8pt; alignment-baseline:central; }
 
  #countrySelect {
      display:none;
@@ -520,7 +518,7 @@ body {
  /*.migrants-text { display:inline-block; }*/
  /*#color-legend { display:inline-block; margin-left:0; padding-left:0; }*/
  #color-legend { display:none; position: absolute; bottom:235px; right:20px; }
- #color-legend text { fill:#999; font-size:11px; font-family: Lato; text-shadow: 1px 1px 1px #111; }
+#color-legend text { fill:#999; font-size:11px; font-family: Lato; /* text-shadow: 1px 1px 1px #BABECB; */ }
  #color-legend text.axis {  }
  #color-legend text.title {   }
 
@@ -528,7 +526,7 @@ body {
  #circle-legend { display:none; position:absolute; top:80px; right:20px; }
  #circle-legend text {
      font-family: Lato;
-     text-shadow: 1px 1px 1px #111; fill:#ccc; font-size:8px;
+     text-shadow: /* 1px 1px 1px #BABECB; */ fill:#ccc; font-size:8px;
      alignment-baseline:central;
  }
  #circle-legend rect {
@@ -554,7 +552,7 @@ body {
     #guide aside p { line-height:20px; padding-bottom:10px; }
     #guide .content { height:20em; }
     #details { top:60px; left:30px; }
-    #details .country { font-size:15pt; }
+    #details .country { font-size:20pt; }
     #details .year { font-size:16pt; }
     #details .value {   font-size:14pt; }
      #details .migrants .value {   font-size:10pt; }
@@ -574,7 +572,7 @@ body {
      #details .title {  font-size:8pt;  }
      #details .comment { font-size:6pt; }
     #color-legend text { font-size:7pt; }
-    #show-intro { font-size:8pt; }
+    #show-intro { stroke-width:0.1; background-color: white; color: #8A8A8A; font-size:8pt; }
     #guide .next, #guide .prev, #guide .last {
         height: 50px;
         line-height: 50px;
@@ -624,7 +622,7 @@ body {
     #details .country { font-size:15pt; }
     #details .year { font-size:16pt; }
     #details .value {   font-size:14pt; }
-     #details .migrants .value {   font-size:10pt; }
+     #details .migrants .value { font-size:10pt; }
      #details .migrants {
          background-size: 16px 15px;
          background-position: 3px 5px;
