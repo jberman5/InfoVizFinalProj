@@ -4,7 +4,7 @@
     "browser.not.supported" : "Unfortunately, your browser does not support the interactive features required by this visualization.",
     "title" : "Human Flow",
     "details.remittances.title.total" : "The most number of refugees are going to",
-    "details.remittances.total" : "Total",
+    "details.remittances.total" : "World",
     "details.remittances.per-capita.title" : "per capita",
     "per-capita" : "Per capita",
     "search.country" : "Country",
@@ -14,7 +14,7 @@
     "details.aid.title.selected-country" : "Top 5 Host Countries",
     "details.migrants.title" : "Refugees",
     "details.aid.title" : "Top 5 Host Countries",
-    "money" : "${0}",
+    "money" : "{0}",
     "amount.not-available" : "n/a",
     "amount.billions" : "{0} billion",
     "amount.billions.singular" : "{0} billion",
@@ -23,7 +23,7 @@
     "amount.thousands" : "{0} thousand",
 
     "tooltip.migrants.number.from-a" : "{0} Refugees from {1}",
-    "tooltip.remittances.amount" : "{0} sent to home country by Refugees",
+    "tooltip.remittances.amount" : "{0} refugees came in",
 
     "legend.migrants.number" : "Number of Refugees",
     "legend.migrants.low" : "Few",

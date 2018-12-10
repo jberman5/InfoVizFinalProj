@@ -2,8 +2,6 @@ $(function() {
 
 if (!Modernizr.svg) { return; }
 
-barGraph();
-
 var landColor = d3.rgb("#BABECC");  //1e2b32 .brighter(2)
 // var width = height = null;
 
@@ -21,11 +19,7 @@ var migrationsColor =
     .interpolate(d3.interpolateHcl);
 
 var projection = d3.geo.robinson()
-    // .rotate([-10, -45])
     .scale(180);
-    // d3.geo.eckert3().scale(105)
-    // d3.geo.robinson()
-    //var projection = d3.geo.winkel3();
 
 var path = d3.geo.path()
     .projection(projection);
@@ -47,6 +41,39 @@ function initSizes() {
 
 initSizes();
 
+var data = [{
+                "name": "Top 1",
+                "value": 15000,
+        },
+            {
+                "name": "Top 2",
+                "value": 10203,
+        },
+            {
+                "name": "Top 3",
+                "value": 8038,
+        },
+            {
+                "name": "Top 4",
+                "value": 5300,
+        },
+            {
+                "name": "Top 5",
+                "value": 1600,
+        }];
+
+// Bar Graph
+var barMargin = { top: 15, right: 25, bottom: 15, left: 50 };
+var barWidth = 250 - barMargin.left - barMargin.right,
+    barHeight = 150 - barMargin.top - barMargin.bottom;
+
+var barSvg = d3.select("#graphic").append("svg")
+    .attr("width", barWidth + barMargin.left + barMargin.right)
+    .attr("height", barHeight + barMargin.top + barMargin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + barMargin.left + "," + barMargin.top + ")");
+
+// Timeline
 var timelineMargins = {left: 40, top: 10, bottom: 5, right: 100};
 var timelineWidth = width,
     timelineHeight = 100;
@@ -68,32 +95,33 @@ var isPlural = function(v, exp) {
   return v >= 2;
 }
 
-var numberFormat = (function() {
-  var short_fmt = d3.format(",.0f");
-  var nfmt = d3.format(",.1f");
-  var fmt = function(v) {  // remove trailing .0
-    var formatted = nfmt(v);
-    var m = formatted.match(/^(.*)\.0$/);
-    if (m !== null) formatted = m[1];
-    return formatted;
-  };
-  return function(v) {
-    if (v == null  ||  isNaN(v)) return msg("amount.not-available");
-    if (isPlural(v, 1e9)) return msg("amount.billions",  fmt(v / 1e9));
-    if (v >= 1e9) return msg("amount.billions.singular",  fmt(v / 1e9));
-    if (isPlural(v, 1e6)) return msg("amount.millions",  fmt(v / 1e6));
-    if (v >= 1e6) return msg("amount.millions.singular",  fmt(v / 1e6));
-//    if (v >= 1e3) return msg("amount.thousands", fmt(v / 1e3));
-    return short_fmt(v);
-  };
-})();
+var formatComma = d3.format(",");
+// var numberFormat = (function() {
+//   var short_fmt = d3.format(",.0f");
+//   var nfmt = d3.format(",.1f");
+//   var fmt = function(v) {  // remove trailing .0
+//     var formatted = nfmt(v);
+//     var m = formatted.match(/^(.*)\.0$/);
+//     if (m !== null) formatted = m[1];
+//     return formatted;
+//   };
+//   return function(v) {
+//     if (v == null  ||  isNaN(v)) return msg("amount.not-available");
+//     if (isPlural(v, 1e9)) return msg("amount.billions",  fmt(v / 1e9));
+//     if (v >= 1e9) return msg("amount.billions.singular",  fmt(v / 1e9));
+//     if (isPlural(v, 1e6)) return msg("amount.millions",  fmt(v / 1e6));
+//     if (v >= 1e6) return msg("amount.millions.singular",  fmt(v / 1e6));
+// //    if (v >= 1e3) return msg("amount.thousands", fmt(v / 1e3));
+//     return short_fmt(v);
+//   };
+// };
+//
+// var moneyFormat = function(v) {
+//   if (v == null  ||  isNaN(v)) return msg("amount.not-available");
+//   return msg("money", numberFormat(v));
+// };
 
-var moneyFormat = function(v) {
-  if (v == null  ||  isNaN(v)) return msg("amount.not-available");
-  return msg("money", numberFormat(v));
-};
-
-var moneyMillionsFormat = function(v) { return moneyFormat(1e6 * v); };
+// var moneyMillionsFormat = function(v) { return moneyFormat(1e6 * v); };
 
 function str2num(str) {
   // empty string gives 0 when using + to convert
@@ -103,6 +131,7 @@ function str2num(str) {
 
 
 var migrationYears = [ 1980, 1990, 2000, 2010, 2017 ];
+
 var remittanceYears = [
   1976,1977,1978,1979,1980,1981,1982,1983,1984,1985,1986,1987,1988,1989,1990,1991,
   1992,1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,
@@ -117,6 +146,8 @@ var remittanceTotals, remittanceTotalsByMigrantsOrigin,
     refugeeTotals, refugeeTotalsByOrigin,
     aidTotals, aidTotalsByRecipient;
 
+
+// Timeline
 var yearScale = d3.scale.linear()
   .domain(remittanceYearsDomain);
 
@@ -151,6 +182,7 @@ var perMigrant = false;
 
 var countryFeaturesByCode = {}, countryNamesByCode = {};
 
+// Animation
 var yearAnimation = (function() {
   var anim = {};
   var timerId = null;
@@ -224,9 +256,6 @@ var yearAnimation = (function() {
   return anim;
 })();
 
-
-
-
 var mySwiper = new Swiper('#guide',{
   //Your options here:
   mode:'horizontal',
@@ -234,7 +263,6 @@ var mySwiper = new Swiper('#guide',{
     if (visReady) slideSelected();
   }
 });
-
 
 function showGuide() {
   $("#guide").fadeIn();
@@ -311,30 +339,6 @@ function slideSelected() {
       selectYear(2017);
       // showAid();
     break;
-    //
-    // case 4: // Weniger Geld für Griechenland und die Türkei
-    //   $("#color-legend").fadeIn();
-    //   setPerMigrant(false);
-    //   selectCountry("TUR", true);
-    //   selectYear(2000);
-    //   showAid();
-    // break;
-    //
-    // case 5: // Krise? Welche Krise?
-    //   $("#color-legend").fadeOut();
-    //   setPerMigrant(false);
-    //   selectCountry(null);
-    //   selectYear(2008);
-    //   showAid();
-    // break;
-    //
-    // case 6: //  Erkunden Sie die Daten selber!
-    //   $("#color-legend").fadeIn();
-    //   setPerMigrant(false);
-    //   selectCountry(null);
-    //   selectYear(2010);
-    //   showAid();
-    // break;
   }
 
 };
@@ -348,7 +352,6 @@ var prev = function() {
     mySwiper.swipePrev();
   }
 };
-
 
 $("#guide .next").click(next);
 $("#guide .prev").click(prev);
@@ -402,7 +405,6 @@ $("body").keydown(function(e) {
   }
 });
 
-
 $("#guide .skip").click(function() {
   if (visReady) hideGuide();
 });
@@ -410,11 +412,8 @@ $("#guide .last").click(hideGuide);
 
 $(document).keyup(function(e) { if (e.keyCode == 27) hideGuide(); });
 
+///////////////////////////////
 
-
-
-/* @param values is an array in which the indices correspond to the
-                 indices in the remittenceYears array */
 function calcTotalsByYear(values) {
   var totals = {}, i, yi, countryData, y, val, max = NaN;
 
@@ -440,112 +439,7 @@ function calcTotalsByYear(values) {
   return totals;
 }
 
-
-function barGraph() {
-  //////////////
-
-  var data = [{
-                  "name": "Top 1",
-                  "value": 15000,
-          },
-              {
-                  "name": "Top 2",
-                  "value": 10203,
-          },
-              {
-                  "name": "Top 3",
-                  "value": 8038,
-          },
-              {
-                  "name": "Top 4",
-                  "value": 5300,
-          },
-              {
-                  "name": "Top 5",
-                  "value": 1600,
-          }];
-
-          //sort bars based on value
-          data = data.sort(function (a, b) {
-              return d3.ascending(a.value, b.value);
-          })
-
-          //set up svg using margin conventions - we'll need plenty of room on the left for labels
-          var margin = {
-              top: 15,
-              right: 25,
-              bottom: 15,
-              left: 50
-          };
-
-          var width = 250 - margin.left - margin.right,
-              height = 150 - margin.top - margin.bottom;
-
-          var svg = d3.select("#graphic").append("svg")
-              .attr("width", width + margin.left + margin.right)
-              .attr("height", height + margin.top + margin.bottom)
-              .append("g")
-              .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-          var x = d3.scale.linear()
-              .range([0, width])
-              .domain([0, d3.max(data, function (d) {
-                  return d.value;
-              })]);
-
-          var y = d3.scale.ordinal()
-              .rangeRoundBands([height, 0], .1)
-              .domain(data.map(function (d) {
-                  return d.name;
-              }));
-
-          //make y axis to show bar names
-          var yAxis = d3.svg.axis()
-              .scale(y)
-              //no tick marks
-              .tickSize(0)
-              .orient("left");
-
-          var gy = svg.append("g")
-              .attr("class", "y axis")
-              .call(yAxis)
-
-          var bars = svg.selectAll(".bar")
-              .data(data)
-              .enter()
-              .append("g")
-
-          //append rects
-          bars.append("rect")
-              .attr("class", "bar")
-              .attr("y", function (d) {
-                  return y(d.name);
-              })
-              .attr("height", y.rangeBand())
-              .attr("x", 0)
-              .attr("width", function (d) {
-                  return x(d.value);
-              });
-
-          //add a value label to the right of each bar
-          bars.append("text")
-              .attr("class", "label")
-              .attr("y", function (d) {
-                  return y(d.name) + y.rangeBand() / 2 + 4;
-              })
-              .attr("x", function (d) {
-                  return x(d.value) + 3;
-              })
-              .text(function (d) {
-                  return d.value;
-              });
-
-  ///////////////
-}
-
-
-
-
+///////////////
 
 function initTimeSeries(name) {
   var tseries = timeline.select("g.tseries");
@@ -570,7 +464,6 @@ function initTimeSeries(name) {
     var legend = tseries.append("g")
       .attr("class", "legend")
       .attr("transform",
-//        "translate("+ Math.round(timelineWidth * 0.8 - 200)+ ", "+Math.round(timelineHeight*0.4) +")"
         "translate(120,10)"
       );
 
@@ -595,7 +488,6 @@ function initTimeSeries(name) {
     gg.append("text")
       .attr("x", 15)
       .text(msg("details.tseries.legend.aid"));
-
   }
 }
 
@@ -606,14 +498,66 @@ function renderTimeSeries(name, data) {
   if (data == null) data = {};
   var years = remittanceYears; // d3.keys(data).sort();
 
-
-
   tseries.datum(years.map(function(y) { return { year:y,  value: data[y] }; }), years)
     .select("path." + name)
       .attr("d", function(d) {
         var line = tseriesLine(d);
         if (line == null) line = "M0,0";
         return line;
+      });
+
+  // barData = data.sort(function (a, b) {
+  //     return d3.ascending(a.value, b.value);
+  // })
+  console.log(data);
+
+  var x = d3.scale.linear()
+      .range([0, barWidth])
+      .domain([0, d3.max(data, function (d) {
+          return d.value;
+      })]);
+
+  var y = d3.scale.ordinal()
+      .rangeRoundBands([barHeight, 0], .1)
+      .domain(years.map(function (d) {
+          return d.name;
+      }));
+
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .tickSize(0)
+      .orient("left");
+
+  var gy = barSvg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+
+  var bars = barSvg.selectAll(".bar")
+      .data(data)
+      .enter()
+      .append("g")
+
+  bars.append("rect")
+      .attr("class", "bar")
+      .attr("y", function (d) {
+          return y(d.name);
+      })
+      .attr("height", y.rangeBand())
+      .attr("x", 0)
+      .attr("width", function (d) {
+          return x(d.value);
+      });
+
+  bars.append("text")
+      .attr("class", "label")
+      .attr("y", function (d) {
+          return y(d.name) + y.rangeBand() / 2 + 4;
+      })
+      .attr("x", function (d) {
+          return x(d.value) + 3;
+      })
+      .text(function (d) {
+          return d.value;
       });
 
 }
@@ -642,7 +586,6 @@ function calcPerMigrantValues(data, originCode) {
   return byMigrant;
 }
 
-
 function updateTimeSeries() {
 
   var remittances, aid;
@@ -661,39 +604,14 @@ function updateTimeSeries() {
   } else {
     if (country == null) {
       remittances = remittanceTotals;
-      aid = aidTotals;
+      // aid = aidTotals;
     } else {
       remittances = remittanceTotalsByMigrantsOrigin[country];
-      aid = aidTotalsByRecipient[country];
+      // aid = aidTotalsByRecipient[country];
     }
     d3.select("#timeline g.tseries .legend .remittances text")
       .text(msg("details.tseries.legend.remittances"));
   }
-
-//  if (country == null) {
-//    remittances = remittanceTotals;
-//    aid = aidTotals;
-//  } else {
-//    remittances = remittanceTotalsByMigrantsOrigin[country];
-//    aid = aidTotalsByRecipient[country];
-//  }
-//
-//  if (perMigrant) {
-//    remittances = calcPerMigrantValues(remittances, country);
-//    aid = calcPerMigrantValues(aid, country);
-//
-//    d3.select("#timeline g.tseries .legend .remittances text")
-//      .text(msg("details.tseries.legend.remittances.per-capita"));
-//
-//    d3.select("#timeline g.tseries .legend .aid text")
-//      .text(msg("details.tseries.legend.aid.per-capita"));
-//  } else {
-//    d3.select("#timeline g.tseries .legend .remittances text")
-//      .text(msg("details.tseries.legend.remittances"));
-//
-//    d3.select("#timeline g.tseries .legend .aid text")
-//      .text(msg("details.tseries.legend.aid"));
-//  }
 
   var rmax = d3.max(d3.values(remittances));
   var dmax = d3.max(d3.values(aid));
@@ -719,9 +637,6 @@ function updateTimeSeries() {
   timeline.select("g.magnitudeAxis").call(magnitudeAxis);
 }
 
-
-
-
 function updateDetails() {
   var details = d3.select("#details");
 
@@ -732,36 +647,29 @@ function updateDetails() {
 
   if (highlightedCountry != null  ||  selectedCountry != null) {
     var iso3 = (selectedCountry || highlightedCountry);
+    console.log(iso3);
     countryName = countryNamesByCode[iso3];
 
     var countryRem = remittanceTotalsByMigrantsOrigin[iso3];
     totalRemittances = (countryRem != null ? str2num(countryRem[selectedYear]) : NaN);
 
-    numMigrants = calcTotalMigrants(selectedYear, iso3);
+    numMigrants = totalRemittances; // calcTotalMigrants(selectedYear, iso3);
+    console.log(totalRemittances);
 
-    var countryAid = aidTotalsByRecipient[iso3];
-    totalAid = (countryAid != null ? str2num(countryAid[selectedYear]) : NaN);
+    // var countryAid = aidTotalsByRecipient[iso3];
+    // totalAid = (countryAid != null ? str2num(countryAid[selectedYear]) : NaN);
 
     // details.select(".aid .title").text(msg("details.aid.title.selected-country"));
+    details.select(".migrants .value").text(function() { return formatComma(numMigrants); });
     details.select(".migrants .title").text(msg("details.migrants.title.total"));
     details.select(".migrants .title").text(msg("details.migrants.title.selected-country"));
     details.select(".remittances .title").text(msg("details.remittances.title.selected-country"));
   } else {
+    // World total
     countryName = msg("details.remittances.total");
-
-    numMigrants = calcTotalMigrants(selectedYear);
-    // totalRemittances = remittanceTotals[selectedYear];
-    // totalAid = aidTotals[selectedYear];
-
-    // details.select(".aid .title").text(msg("details.aid.title.total"));
-    // details.select(".migrants .title").text(msg("details.migrants.title.total"));
-    // details.select(".remittances .title").text(msg("details.remittances.title.total"));
+    numMigrants = remittanceTotals[selectedYear];
   }
-
-  details.select(".migrants .value").text(numberFormat(numMigrants));
-  // details.select(".remittances .value").text(moneyMillionsFormat(totalRemittances));
-  // details.select(".aid .value").text(moneyMillionsFormat(totalAid));
-  // details.select(".remittancesPerCapita .value").text(moneyMillionsFormat(totalRemittances / numMigrants));
+  details.select(".migrants .value").text(function() { return formatComma(numMigrants); });
   details.select(".country").text(countryName);
 }
 
@@ -861,9 +769,7 @@ function highlightCountry(code) {
 /* t must be in the range [0,1] */
 function interpolate(t, a, b) { return a + (b - a) * t; }
 
-
 function updateChoropleth() {
-
   var gcountries = chart_svg.select("g.countries");
 
   if (selectedCountry === null  &&  highlightedCountry == null) {
@@ -877,12 +783,9 @@ function updateChoropleth() {
             .attr("stroke", "none");
 
     gcountries.selectAll("circle.country")
-//       .transition()
-//        .duration(50)
           .attr("opacity", 1);
 
   } else {
-
     var code = ( selectedCountry !== null ? selectedCountry : highlightedCountry);
 
     var migrantsFromCountry = migrationsByOriginCode[code];
@@ -942,17 +845,7 @@ function interpolateNumOfMigrants(values, year) {
   var val = str2num(values[year]);
 
   if (isNaN(val)) {
-    val = str2num(values[2010]);
-
-    if (year >= 2011) {
-	    val = str2num(values[2010]);
-    }
-    else if ((year % 10) !== 0) {
-      // assuming we have data only for each 10th year (which ends with 0)
-      var l = Math.floor(year/10)*10, r = Math.ceil(year/10)*10;
-      var t = (year - l) / (r - l);
-      val = interpolate(t, str2num(values[l]), str2num(values[r]));
-    }
+    val = str2num(values[year]);
   }
 
   return val;
@@ -968,18 +861,21 @@ function getInterpolatedNumberOfMigrants(from, to, year) {
       console.log(d.iso3);
       return d.iso3 === to; })[0];
     if (vals != undefined) {
-      return interpolateNumOfMigrants(vals, year);
+      return vals;
     }
   }
   return NaN;
 }
 
 
+
 function calcTotalMigrants(year, origin) {
+
   if (origin != undefined)
     return interpolateNumOfMigrants(refugeeTotalsByOrigin[origin], year);
 
   return d3.keys(refugeeTotalsByOrigin).reduce(function(sum, origin) {
+    console.log(origin);
     var val = interpolateNumOfMigrants(refugeeTotalsByOrigin[origin], year);
     if (!isNaN(val)) {
       if (isNaN(sum)) sum = 0;
@@ -1026,10 +922,6 @@ function initCountryNames(remittances) {
     r.centroid = [+r.lon, +r.lat];
     countryNamesByCode[r.iso3] = r[countryNameKey];
   });
-  if (msg.lang() == "de") {
-    countryNamesByCode.GBR = "Grossbritannien";
-    countryNamesByCode.ARG = "Argentinien";
-  }
 }
 
 
@@ -1124,7 +1016,7 @@ function updateCircleLegend() {
 
   items.select("text");  // propagate data update from parent
   items.selectAll("text")
-    .text(function(d) { return moneyMillionsFormat(d)});
+    .text(function() { return formatComma(d); });
 }
 
 function updateColorLegend() {
@@ -1194,6 +1086,21 @@ queue()
 //   $("#loading").hide();
 //    yearAnimation.start();
 
+
+
+  migrationsBypair =
+    d3.nest()
+    .key(function(d) {return d.origin})
+    .rollup(function(arr) {
+        var d = arr[0], byYear = {};
+        remittanceYears.forEach(function(y) {
+          var v = str2num(d[y]);
+          if (!isNaN(v)) byYear[y] = v;
+        });
+        return byYear;
+     })
+    .map(migrations);
+
     remittanceTotalsByMigrantsOrigin = //nestBy("iso3", remittances);
       d3.nest()
       .key(function(d) { return d.iso3; })
@@ -1209,14 +1116,15 @@ queue()
 
     remittanceTotals = calcTotalsByYear(remittances);
 
-    aidTotalsByRecipient = aid["by-recipient"];
-    aidTotals = aid["TOTAL"];
+    // aidTotalsByRecipient = aid["by-recipient"];
+    // aidTotals = aid["TOTAL"];
 //    aidTotals2 = calcTotalsByYear(
 //      // remove TOTAL
 //      d3.keys(aid).filter(function(d) { return  d!== "TOTAL"}).map(function(d) { return aid[d]; })
 //    );
 
     refugeeTotalsByOrigin = nestBy("origin", remittances);
+
 
     remittanceTotalsPerMigrant = calcPerMigrantValues(remittanceTotals);
     remittanceTotalsPerMigrantByMigrantsOrigin = calcRemittanceTotalsPerMigrantByMigrantsOrigin();
@@ -1258,11 +1166,6 @@ queue()
     };
 
     updateMap();
-
-
-
-
-
 
     var arcs = chart_svg.append("g").attr("class", "arcs");
 
@@ -1451,11 +1354,12 @@ queue()
              if (selectedCountry != null) {
                if (selectedCountry !== iso3) {
                  val = getInterpolatedNumberOfMigrants(selectedCountry, iso3, selectedYear);
-                 text = "<b>"+countryNamesByCode[iso3]+"</b>" + (!isNaN(val) ? ": <br>" +
-                   msg("tooltip.migrants.number.from-a",
-                     numberFormat(val),
-                     countryNamesByCode[selectedCountry]) :
-                     ": " + numberFormat(val));
+                 text = "<b>"+countryNamesByCode[iso3]+"</b>"
+                        // + (!isNaN(val) ? ": <br>" +
+                        // msg("tooltip.migrants.number.from-a",
+                        //   formatComma(val),
+                        //   countryNamesByCode[selectedCountry]) :
+                        //   ": " + formatComma(val));
                }
              }
 
@@ -1466,8 +1370,8 @@ queue()
                    val = vals[selectedYear];
                    text = "<b>"+countryNamesByCode[iso3]+"</b>" +
                      (!isNaN(val) ? ": <br>" +
-                       msg("tooltip.remittances.amount", moneyMillionsFormat(val)) :
-                       ": " + numberFormat(val));
+                       msg("tooltip.remittances.amount", formatComma(val)) :
+                       ": " + formatComma(val));
                  }
                }
              }
@@ -1482,18 +1386,12 @@ queue()
          })
          .on("mouseout", hideTooltip);
 
-
-
     $("#details").fadeIn();
     $("#circle-legend").fadeIn();
     $("#show-intro").fadeIn();
 
-
-
     visReady = true;
     slideSelected();
-
-
 
     var onResize = function() {
       initSizes();
