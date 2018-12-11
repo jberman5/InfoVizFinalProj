@@ -40,21 +40,22 @@
     "intro.next" : "Next",
     "intro.skip" : "Skip intro",
     "intro.show" : "Show intro",
-    "intro.start-exploring" : "Start now",
+    "intro.start-exploring" : "Start Exploring",
     "intro.animation.play" : "Play",
     "intro.animation.stop" : "Pause",
 
-    "intro.1.title" : "66 million refugees",
-    "intro.1.text" : "The UN’s refugee agency, the UNHCR, says there are more people displaced by conflict in the world today than at any point since the second world war. An estimated 66 million people are currently displaced, either within their home countries or abroad.",
+    "intro.1.title" : "The Highest Number of Refugees Ever Seen",
+    "intro.1.text" : "Historically, people around the world have displaced from their home countries due to conflict, war, persecution and human rights violations. According to The UN Refugee Agency, 25.4 million refugees in the world by the end of 2017.",
 
-    "intro.2.title" : "Mostly European Countries?",
-    "intro.2.text" : "After the Arab uprisings of 2011, the number of people coming to Europe to seek asylum – via Turkey, or across the central Mediterranean from north Africa – began to rise. But Europe continued to make security its priority, rather than the protection of vulnerable people. In the same period as it spent €2bn euros on border security, the EU spent only an estimated €700m on reception conditions for refugees.",
+    "intro.2.title" : "Some countries are more densed in the number",
+    "intro.2.text" : "Two-thirds of all refugees worldwide come from just five countries: Syria, Afghanistan, South Sudan, Myanmar and Somalia.",
 
     "intro.3.title" : "Still people are ending up going to surrounded countries",
-    "intro.3.text" : "But 86% of these remain in the developing world, not in wealthy regions such as Europe.",
+    "intro.3.text" : "In the US and Europe the refugee crisis often framed in terms of migration to our own countries. However, neighboring nations, which are often less developed, are the largest hosts.",
 
-    "intro.4.title" : "Explore the data yourself",
-    "intro.4.text" : "Blah Blah"
+    "intro.4.title" : "Explore by yourself",
+    "intro.4.text" : "You can choose a country to know the total number of refugees over time."
+
 
   }
 

@@ -1,9 +1,10 @@
 $(function() {
 
+/////////////////////////////////////////
+
 if (!Modernizr.svg) { return; }
 
-var landColor = d3.rgb("#BABECC");  //1e2b32 .brighter(2)
-// var width = height = null;
+var landColor = d3.rgb("#D7DAE2");
 
 var countryNameKey = (msg.lang() === "en" ? "name" : "name_" + msg.lang());
 var visReady = false;
@@ -11,11 +12,11 @@ var visReady = false;
 var chart_svg = d3.select("#chart").append("svg");
 
 var background = chart_svg.append("rect")
-  .attr("fill", "#E4E9F0");
+  .attr("fill", "#FFFFFF");
 
 var migrationsColor =
   d3.scale.log()
-    .range(["#C6CCE7", "#959AB2"])
+    .range(["#A6BDDB", "#045A8D"])
     .interpolate(d3.interpolateHcl);
 
 var projection = d3.geo.robinson()
@@ -41,42 +42,12 @@ function initSizes() {
 
 initSizes();
 
-var data = [{
-                "name": "Top 1",
-                "value": 15000,
-        },
-            {
-                "name": "Top 2",
-                "value": 10203,
-        },
-            {
-                "name": "Top 3",
-                "value": 8038,
-        },
-            {
-                "name": "Top 4",
-                "value": 5300,
-        },
-            {
-                "name": "Top 5",
-                "value": 1600,
-        }];
-
-// Bar Graph
-var barMargin = { top: 15, right: 25, bottom: 15, left: 50 };
-var barWidth = 250 - barMargin.left - barMargin.right,
-    barHeight = 150 - barMargin.top - barMargin.bottom;
-
-var barSvg = d3.select("#graphic").append("svg")
-    .attr("width", barWidth + barMargin.left + barMargin.right)
-    .attr("height", barHeight + barMargin.top + barMargin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + barMargin.left + "," + barMargin.top + ")");
-
 // Timeline
-var timelineMargins = {left: 40, top: 10, bottom: 5, right: 100};
+flowChart("data/refugee-top20.csv", "blue");
+
+var timelineMargins = {left: 50, top: 10, bottom: 0, right: 100};
 var timelineWidth = width,
-    timelineHeight = 100;
+    timelineHeight = 200;
 
 var timelineSvg = d3.select("#timeline").append("svg")
     .attr("width", timelineWidth + timelineMargins.left + timelineMargins.right);
@@ -96,39 +67,11 @@ var isPlural = function(v, exp) {
 }
 
 var formatComma = d3.format(",");
-// var numberFormat = (function() {
-//   var short_fmt = d3.format(",.0f");
-//   var nfmt = d3.format(",.1f");
-//   var fmt = function(v) {  // remove trailing .0
-//     var formatted = nfmt(v);
-//     var m = formatted.match(/^(.*)\.0$/);
-//     if (m !== null) formatted = m[1];
-//     return formatted;
-//   };
-//   return function(v) {
-//     if (v == null  ||  isNaN(v)) return msg("amount.not-available");
-//     if (isPlural(v, 1e9)) return msg("amount.billions",  fmt(v / 1e9));
-//     if (v >= 1e9) return msg("amount.billions.singular",  fmt(v / 1e9));
-//     if (isPlural(v, 1e6)) return msg("amount.millions",  fmt(v / 1e6));
-//     if (v >= 1e6) return msg("amount.millions.singular",  fmt(v / 1e6));
-// //    if (v >= 1e3) return msg("amount.thousands", fmt(v / 1e3));
-//     return short_fmt(v);
-//   };
-// };
-//
-// var moneyFormat = function(v) {
-//   if (v == null  ||  isNaN(v)) return msg("amount.not-available");
-//   return msg("money", numberFormat(v));
-// };
-
-// var moneyMillionsFormat = function(v) { return moneyFormat(1e6 * v); };
 
 function str2num(str) {
-  // empty string gives 0 when using + to convert
   if (str === null || str === undefined || str.length == 0) return NaN;
   return +str;
 }
-
 
 var migrationYears = [ 1980, 1990, 2000, 2010, 2017 ];
 
@@ -146,7 +89,6 @@ var remittanceTotals, remittanceTotalsByMigrantsOrigin,
     refugeeTotals, refugeeTotalsByOrigin,
     aidTotals, aidTotalsByRecipient;
 
-
 // Timeline
 var yearScale = d3.scale.linear()
   .domain(remittanceYearsDomain);
@@ -154,7 +96,7 @@ var yearScale = d3.scale.linear()
 var tseriesScale = d3.scale.linear()
   .range([timelineHeight, 2]);
 
-var tseriesLine = d3.svg.line()
+var tseriesLine = d3.svg.area()
   .interpolate("monotone")
   .defined(function(d) {
     return !isNaN(d.value)});
@@ -264,6 +206,32 @@ var mySwiper = new Swiper('#guide',{
   }
 });
 
+function hideFlowChart() {
+  $("#flowChart").stop().fadeOut(250);
+  $("#flowChart").css("visibility", "hidden");
+  $("#chart").fadeIn();
+  $("#chart").css("visibility", "visible");
+  $("#timeline").css("visibility", "visible");
+  $("#color-legend").css("visibility", "visible");
+  $("#details").css("visibility", "visible");
+  // setPerMigrant(false);
+  // yearAnimation.stop();
+  // showAid();
+};
+
+function showFlowChart() {
+  $("#chart").stop().fadeOut(250);
+  $("#chart").css("visibility", "hidden");
+  $("#flowChart").fadeIn();
+  $("#flowChart").css("visibility", "visible");
+  $("#timeline").css("visibility", "hidden");
+  $("#color-legend").css("visibility", "hidden");
+  $("#details").css("visibility", "hidden");
+  // setPerMigrant(false);
+  // yearAnimation.stop();
+  // showAid();
+};
+
 function showGuide() {
   $("#guide").fadeIn();
   $("#countrySelect").fadeOut();
@@ -279,26 +247,25 @@ function hideGuide() {
   $("#guide").fadeOut();
   $("#countrySelect").fadeIn();
   $("#color-legend").fadeIn();
-//  $("#per-capita").fadeIn();
   $("#timeline .play-parent").css("visibility", "visible");
   setPerMigrant(false);
   yearAnimation.stop();
-  showAid();
+  // showAid();
 };
 
-function hideAid() {
-  d3.selectAll("#timeline g.tseries .aid")
-    .transition()
-    .duration(300)
-      .attr("opacity", "0");
-}
-
-function showAid() {
-  d3.selectAll("#timeline g.tseries .aid")
-    .transition()
-    .duration(300)
-      .attr("opacity", "1.0");
-}
+// function hideAid() {
+//   d3.selectAll("#timeline g.tseries .aid")
+//     .transition()
+//     .duration(300)
+//       .attr("opacity", "0");
+// }
+//
+// function showAid() {
+//   d3.selectAll("#timeline g.tseries .aid")
+//     .transition()
+//     .duration(300)
+//       .attr("opacity", "1.0");
+// }
 
 
 function slideSelected() {
@@ -308,15 +275,18 @@ function slideSelected() {
     .text(msg("intro.animation.play"));
 
   switch (mySwiper.activeSlide) {
-    case 0: // Massiver Anstieg in den letzten zehn Jahren
+    case 0:
+      showFlowChart();
       $("#color-legend").fadeOut();
-      setPerMigrant(false);
-      selectCountry(null);
-      selectYear(2012);
+      $("#chart").css("visibility", "hidden");
+      // setPerMigrant(false);
+      // selectCountry(null);
+      // selectYear(2017);
       // hideAid();
     break;
 
-    case 1: // Viermal mehr als Entwicklungshilfe
+    case 1:
+      showFlowChart();
       $("#color-legend").fadeOut();
       setPerMigrant(false);
       selectCountry(null);
@@ -324,17 +294,19 @@ function slideSelected() {
       // showAid();
     break;
 
-    case 2:  // Pro Kopf
+    case 2:
+      showFlowChart();
       $("#color-legend").fadeIn();
       setPerMigrant(false);
-      selectCountry("SYR", true);
+      selectCountry(null);
       selectYear(2015);
       // showAid();
     break;
 
-    case 3: //  Indien und China weit vorneweg
+    case 3:
+      hideFlowChart();
       $("#color-legend").fadeIn();
-      setPerMigrant(true);
+      setPerMigrant(false);
       selectCountry(null);
       selectYear(2017);
       // showAid();
@@ -414,6 +386,96 @@ $(document).keyup(function(e) { if (e.keyCode == 27) hideGuide(); });
 
 ///////////////////////////////
 
+var datearray = [];
+var colorrange = [];
+
+function flowChart(csvpath, color) {
+  if (color == "blue") {
+    colorrange = ["#045A8D", "#2B8CBE", "#74A9CF", "#A6BDDB", "#D0D1E6", "#F1EEF6"];
+  }
+
+  strokecolor = colorrange[0];
+
+  var format = d3.time.format("%Y");
+
+  var margin = {top: 200, right: 0, bottom: 200, left: 0};
+  var width = $(window).width() - margin.left - margin.right;
+  var height = $(window).height() - margin.top - margin.bottom;
+
+  var tooltip = d3.select("body")
+      .append("div")
+      .attr("class", "remove")
+      .style("position", "fixed")
+      .style("z-index", "20")
+      .style("visibility", "hidden")
+      .style("top", "30px")
+      .style("left", "55px");
+
+  var x = d3.time.scale()
+      .range([0, width]);
+
+  var y = d3.scale.linear()
+      .range([height - 10, 0]);
+
+  var z = d3.scale.ordinal()
+      .range(colorrange);
+
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom")
+
+  var yAxis = d3.svg.axis()
+      .scale(y);
+
+  var yAxisr = d3.svg.axis()
+      .scale(y);
+
+  var stack = d3.layout.stack()
+      .offset("silhouette")
+      .values(function(d) { return d.values; })
+      .x(function(d) { return d.year; })
+      .y(function(d) { return d.refugees; });
+
+  var nest = d3.nest()
+      .key(function(d) { return d.origin; });
+
+  var area = d3.svg.area()
+      .interpolate("cardinal")
+      .x(function(d) { return x(d.year); })
+      .y0(function(d) { return y(d.y0); })
+      .y1(function(d) { return y(d.y0 + d.y); });
+
+  var svg = d3.select("#flowChart").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  var graph = d3.csv(csvpath, function(data) {
+    data.forEach(function(d) {
+      d.year = format.parse(d.year); // format.parse(d.year);
+      d.refugees = +d.refugees;
+    });
+
+    var layers = stack(nest.entries(data));
+
+    x.domain(d3.extent(data, function(d) { return d.year; }));
+    y.domain([0, d3.max(data, function(d) { return d.y0 + d.y; })]);
+
+    svg.selectAll(".layer")
+        .data(layers)
+      .enter().append("path")
+        .attr("class", "layer")
+        .attr("d", function(d) { return area(d.values); })
+        .style("fill", function(d, i) { return z(i); });
+
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+  });
+}
+
 function calcTotalsByYear(values) {
   var totals = {}, i, yi, countryData, y, val, max = NaN;
 
@@ -422,20 +484,13 @@ function calcTotalsByYear(values) {
 
     for (yi=0; yi<remittanceYears.length; yi++) {
       y = remittanceYears[yi];
-//      if (totals[y] === undefined) totals[y] = NaN;
-
       val = str2num(countryData[y]);
       if (!isNaN(val)) {
-//        if (isNaN(totals[y])) totals[y] = 0;
         if (totals[y] === undefined) totals[y] = 0;
         totals[y] += val;
       }
     }
   }
-
-
-//  return remittanceYears.map(function(d,i) { return { year:d, value: totals[i] } });
-
   return totals;
 }
 
@@ -453,11 +508,13 @@ function initTimeSeries(name) {
   if (path.empty) {
     tseriesLine
       .x(function(d) { return yearScale(d.year); })
-      .y(function(d) { return tseriesScale(d.value); });
+      .y1(function(d) { return tseriesScale(d.value); })
+      .y0(tseriesScale(0));
 
     tseries.append("path")
       .attr("class", name)
-      .attr("fill", "none");
+      .attr("fill", "#A9AFC0")
+      //.attr("stroke-color", "#A9AFC0");
   }
 
   if (tseries.select("g.legend").empty()) {
@@ -478,16 +535,16 @@ function initTimeSeries(name) {
       .attr("x", 15)
       .text(msg("details.tseries.legend.remittances"));
 
-    gg = legend.append("g")
-       .attr("class", "aid")
-       .attr("transform", "translate(0, 30)");
-
-    gg.append("circle")
-      .attr("cx", 5)
-      .attr("r", 5);
-    gg.append("text")
-      .attr("x", 15)
-      .text(msg("details.tseries.legend.aid"));
+    // gg = legend.append("g")
+    //    .attr("class", "aid")
+    //    .attr("transform", "translate(0, 30)");
+    //
+    // gg.append("circle")
+    //   .attr("cx", 5)
+    //   .attr("r", 5);
+    // gg.append("text")
+    //   .attr("x", 15)
+    //   .text(msg("details.tseries.legend.aid"));
   }
 }
 
@@ -504,60 +561,6 @@ function renderTimeSeries(name, data) {
         var line = tseriesLine(d);
         if (line == null) line = "M0,0";
         return line;
-      });
-
-  // barData = data.sort(function (a, b) {
-  //     return d3.ascending(a.value, b.value);
-  // })
-  console.log(data);
-
-  var x = d3.scale.linear()
-      .range([0, barWidth])
-      .domain([0, d3.max(data, function (d) {
-          return d.value;
-      })]);
-
-  var y = d3.scale.ordinal()
-      .rangeRoundBands([barHeight, 0], .1)
-      .domain(years.map(function (d) {
-          return d.name;
-      }));
-
-  var yAxis = d3.svg.axis()
-      .scale(y)
-      .tickSize(0)
-      .orient("left");
-
-  var gy = barSvg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-
-  var bars = barSvg.selectAll(".bar")
-      .data(data)
-      .enter()
-      .append("g")
-
-  bars.append("rect")
-      .attr("class", "bar")
-      .attr("y", function (d) {
-          return y(d.name);
-      })
-      .attr("height", y.rangeBand())
-      .attr("x", 0)
-      .attr("width", function (d) {
-          return x(d.value);
-      });
-
-  bars.append("text")
-      .attr("class", "label")
-      .attr("y", function (d) {
-          return y(d.name) + y.rangeBand() / 2 + 4;
-      })
-      .attr("x", function (d) {
-          return x(d.value) + 3;
-      })
-      .text(function (d) {
-          return d.value;
       });
 
 }
@@ -647,14 +650,12 @@ function updateDetails() {
 
   if (highlightedCountry != null  ||  selectedCountry != null) {
     var iso3 = (selectedCountry || highlightedCountry);
-    console.log(iso3);
     countryName = countryNamesByCode[iso3];
 
     var countryRem = remittanceTotalsByMigrantsOrigin[iso3];
     totalRemittances = (countryRem != null ? str2num(countryRem[selectedYear]) : NaN);
 
     numMigrants = totalRemittances; // calcTotalMigrants(selectedYear, iso3);
-    console.log(totalRemittances);
 
     // var countryAid = aidTotalsByRecipient[iso3];
     // totalAid = (countryAid != null ? str2num(countryAid[selectedYear]) : NaN);
@@ -875,7 +876,6 @@ function calcTotalMigrants(year, origin) {
     return interpolateNumOfMigrants(refugeeTotalsByOrigin[origin], year);
 
   return d3.keys(refugeeTotalsByOrigin).reduce(function(sum, origin) {
-    console.log(origin);
     var val = interpolateNumOfMigrants(refugeeTotalsByOrigin[origin], year);
     if (!isNaN(val)) {
       if (isNaN(sum)) sum = 0;
@@ -1086,21 +1086,6 @@ queue()
 //   $("#loading").hide();
 //    yearAnimation.start();
 
-
-
-  migrationsBypair =
-    d3.nest()
-    .key(function(d) {return d.origin})
-    .rollup(function(arr) {
-        var d = arr[0], byYear = {};
-        remittanceYears.forEach(function(y) {
-          var v = str2num(d[y]);
-          if (!isNaN(v)) byYear[y] = v;
-        });
-        return byYear;
-     })
-    .map(migrations);
-
     remittanceTotalsByMigrantsOrigin = //nestBy("iso3", remittances);
       d3.nest()
       .key(function(d) { return d.iso3; })
@@ -1129,10 +1114,7 @@ queue()
     remittanceTotalsPerMigrant = calcPerMigrantValues(remittanceTotals);
     remittanceTotalsPerMigrantByMigrantsOrigin = calcRemittanceTotalsPerMigrantByMigrantsOrigin();
 
-
 //    aid = calcPerMigrantValues(aid, country);
-
-
 
     var leftMargin = 350; // Math.max(100, width*0.4);
     var fitMapProjection = function() {
@@ -1168,17 +1150,6 @@ queue()
     updateMap();
 
     var arcs = chart_svg.append("g").attr("class", "arcs");
-
-//    migrations.forEach(function(d) {
-//      d.max = d3.max(migrationYears.map(function(y) { return +d[y]; } ));
-//    });
-//
-//    // migrations = migrations.filter(function(d) { return d.max >= 250000});
-//
-//    var maxMagnitude = d3.max(migrations, function(d) { return d.max; });
-//
-//    migrationsColor.domain([1, maxMagnitude]);
-
 
     var flows = migrations.forEach(function(flow) {
       if (migrationsByOriginCode[flow.origin] === undefined) {
@@ -1216,10 +1187,6 @@ queue()
         .on("mouseover", function(d) { highlightCountry(d.iso3); })
         .on("mouseout", function(d) { highlightCountry(null); })
 
-//        .append("svg:title")
-//          .text(function(d) { return d.Name + ": " + moneyMillionsFormat(d[selectedYear]) + "M current US$"});
-
-
     var updateBubblePositions = function() {
       gcountries.selectAll("circle")
 //        .attr(function(d) {
@@ -1238,7 +1205,7 @@ queue()
 
     selectYear(2010);
 
-    initTimeSeries("aid");
+    // initTimeSeries("aid");
     initTimeSeries("remittances");
 
 
