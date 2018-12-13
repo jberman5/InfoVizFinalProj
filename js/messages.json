@@ -1,0 +1,59 @@
+{
+
+  "en" : {
+    "browser.not.supported" : "Unfortunately, your browser does not support the interactive features required by this visualization.",
+    "title" : "Human Flow",
+    "details.remittances.title.total" : "The most number of refugees are going to",
+    "details.remittances.total" : "World",
+    "details.remittances.per-capita.title" : "per capita",
+    "per-capita" : "Per capita",
+    "search.country" : "Country",
+    "details.migrants.title.total" : "Refugees",
+    "details.migrants.title.selected-country" : "Refugees",
+    "details.aid.title.total" : "Top 5 Host Countries",
+    "details.aid.title.selected-country" : "Top 5 Host Countries",
+    "details.migrants.title" : "Refugees",
+    "details.aid.title" : "Top 5 Host Countries",
+    "money" : "{0}",
+    "amount.not-available" : "n/a",
+    "amount.billions" : "{0} billion",
+    "amount.billions.singular" : "{0} billion",
+    "amount.millions" : "{0} million",
+    "amount.millions.singular" : "{0} million",
+    "amount.thousands" : "{0} thousand",
+
+    "tooltip.migrants.number.from-a" : "{0} Refugees from {1}",
+    "tooltip.remittances.amount" : "{0} refugees going out",
+
+    "legend.migrants.number" : "Number of Refugees",
+    "legend.migrants.low" : "Few",
+    "legend.migrants.high" : "Many",
+
+    "details.remittances.year" : "in {0}",
+
+    "details.tseries.legend.remittances" : "Outgoing refugees",
+    "details.tseries.legend.aid" : "Incoming refugees",
+    "details.tseries.legend.remittances.per-capita" : "Remittances per capita",
+    "details.tseries.legend.aid.per-capita" : "Development aid per capita",
+
+    "intro.prev" : "&nbsp;",
+    "intro.next" : "Next",
+    "intro.skip" : "Skip intro",
+    "intro.show" : "Show intro",
+    "intro.start-exploring" : "Start Exploring",
+    "intro.animation.play" : "Play",
+    "intro.animation.stop" : "Pause",
+
+    "intro.1.title" : "The Highest Number of Refugees Ever Seen",
+    "intro.1.text" : "Historically, people around the world have displaced from their home countries due to conflict, war, persecution and human rights violations. According to The UN Refugee Agency, there are about 20 million refugees whose origin country is identified worldwide by the end of 2017.",
+
+    "intro.2.title" : "Some countries are more densed in the number",
+    "intro.2.text" : "Two-thirds of all refugees worldwide come from just five countries: Syria, Afghanistan, South Sudan, Myanmar and Somalia. From Syria, which has been through severe civil war from 2011, 5.6 million people fled the country as refugees.",
+
+    "intro.3.title" : "Explore by yourself",
+    "intro.3.text" : "You can choose a country to know the total number of refugees over time. Click the Play button to see how the number have got changed over time."
+
+
+  }
+
+}

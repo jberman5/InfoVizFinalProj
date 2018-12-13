@@ -1,0 +1,103 @@
+<!-- Credit for the Base code: ilyabo's World Remittance Inflow - Interactive Map https://github.com/ilyabo/remittances -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title data-msg="title"></title>
+    <meta charset="utf-8"/>
+    <script src="lib/modernizr.svg.js"></script>
+    <script src="lib/idangerous.swiper-1.9.4.min.js" ></script>
+    <script src="lib/jquery-1.9.1.min.js"></script>
+    <script src="js/msg.js"></script>
+    <script src="lib/d3.js"></script>
+    <script src="lib/d3.min.js"></script>
+    <script src="lib/d3.geo.projection.v0.min.js"></script>
+    <script src="lib/queue.min.js"></script>
+    <script src="lib/typeahead.min.js" ></script>
+    <link href="//fonts.googleapis.com/css?family=Lato:300,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="css/chart_style.css">
+  </head>
+
+  <body>
+   <style>
+     .interactive { display:none; }
+     .svg .interactive { display:block; }
+   </style>
+
+   <section class="interactive">
+    <!-- <div id="countrySelect">
+      <input type="text" class="typeahead">
+    </div> -->
+
+    <section id="visualisation">
+
+    <header>
+      <h1 data-msg="title"></h1>
+    </header>
+
+    <div id="legend"></div>
+    <div id="details">
+      <div class="country"></div>
+      <div class="sub">
+        <div class="year"></div>
+        <div class="grp migrants">
+          <div class="value"></div>
+          <div class="title" data-msg="details.migrants.title"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="color-legend"></div>
+    <div id="flowChart"></div>
+    <!-- <div id="targetChart"></div> -->
+    <div id="chart"></div>
+    <div id="timeline"><div class="play-parent"><div class="play" data-msg="intro.animation.play"></div></div></div>
+    <div id="show-intro" data-msg="intro.show"></div>
+    <div id="tooltip"></div>
+  </section>
+
+  <section id="guide" class="swiper-container">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide">
+        <aside>
+          <div class="content">
+            <h2 data-msg="intro.1.title"></h2>
+            <p data-msg="intro.1.text"></p>
+          </div>
+          <a class="prev" data-msg="intro.prev" style="opacity:0.1"></a>
+          <a class="next" data-msg="intro.next"></a>
+          <div class="pagination"></div>
+        </aside>
+      </div>
+
+       <div class="swiper-slide">
+        <aside>
+          <div class="content">
+            <h2 data-msg="intro.2.title"></h2>
+            <p data-msg="intro.2.text"></p>
+          </div>
+          <a class="prev" data-msg="intro.prev"></a>
+          <a class="next" data-msg="intro.next"></a>
+          <div class="pagination"></div>
+        </aside>
+      </div>
+
+      <div class="swiper-slide">
+        <aside>
+          <div class="content">
+            <h2 data-msg="intro.3.title"></h2>
+            <p data-msg="intro.3.text"></p>
+            <a class="anim" data-msg="intro.animation.play"></a>
+          </div>
+          <a class="prev" data-msg="intro.prev"></a>
+          <a class="last" data-msg="intro.start-exploring"></a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+    <script src="lib/fit-projection.js"></script>
+    <script src="js/remittances.js" ></script>
+   </section>
+  </body>
+</html>

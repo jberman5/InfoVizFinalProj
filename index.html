@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Human Flow</title>
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/skeleton.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link href="//fonts.googleapis.com/css?family=Lato:300,700" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/topojson.v2.min.js"></script>
+    <script type="text/javascript" src="js/target.js"></script>
+
+    <div class="container">
+        <div class="row">
+            <div class="ten columns offset-by-one alpha">
+                <h1>Human Flow</h1>
+            </div>
+        </div>
+        <div class="row">
+          <div class="three columns offset-by-one">
+            <div class="row">
+              <h4 id="infoText">When we think of refugees we may often picture them travelling to the US from distant countries.</h4>
+              <button onClick="next()" class="nextButton">Next</button>
+            </div>
+            <div class="row fact">
+              <h3></h3>
+            </div>
+          </div>
+            <div class="eight columns" id="targetChart">
+            </div>
+        </div>
+    </div>
+</body>
+</html>
